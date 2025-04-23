@@ -20,6 +20,7 @@ public class AnswerRepository {
                         while (rs.next()) {
                             Answer answer = new Answer(
                                 rs.getInt("id"),
+                                rs.getInt("question_id"),
                                 rs.getString("answer_text"),
                                 rs.getBoolean("is_correct")
                                 );
@@ -31,25 +32,26 @@ public class AnswerRepository {
                 }
                 return answers;
     }
-}
+
 
     // Сохр ответы в базе данных
 public void saveAnswer(Answer answer){
-     String query = "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?,?,?)";
+     String query = "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?)";
      try(Connection conn = DatabaseConnection.getConnection();
-     
             PreparedStatement stmt = conn.prepareStatement(query)){
-
-                stmt.setInt(1, answer.getId());
+                stmt.setInt(1, answer.getQuestionId());
                 stmt.setString(2,answer.getAnswerText());
                 stmt.setBoolean(3,answer.isCorrect());
                 stmt.executeUpdate();
 
+                System.out.println("Answer saved: " + answer.getAnswerText());
             }catch(SQLException e){
                 e.printStackTrace();
+                System.out.println("Error saving answer: " + e.getMessage());
             }
     }
 
+// удаление ответа
 public void deleteAnswer(int id){
     String query = "DELETE FROM answers WHERE id = ?";
     try(Connection conn = DatabaseConnection.getConnection();
@@ -60,3 +62,4 @@ public void deleteAnswer(int id){
             e.printStackTrace();
         }
     }
+}

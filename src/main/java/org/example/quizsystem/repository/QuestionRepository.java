@@ -19,6 +19,7 @@ public class QuestionRepository {
                         Question question = new Question(
                             rs.getInt("id"),
                             rs.getString("question_text"),
+                            rs.getInt("quiz_id"),
                             null
                         );
                         questions.add(question);
@@ -29,13 +30,14 @@ public class QuestionRepository {
             }
             return questions;
         } 
+        
     // Базага вопросты сактау
     public void saveQuestion(Question question){
         String query = "INSERT INTO questions (quiz_id, question_text) VALUES(?, ?)";
         try(Connection conn = DatabaseConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)){
 
-                stmt.setInt(1,question.getId());
+                stmt.setInt(1,question.getQuizId());
                 stmt.setString(2,question.getQuestionText());
                 stmt.executeUpdate();
             }catch(SQLException e){
